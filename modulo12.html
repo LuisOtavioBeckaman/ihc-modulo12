@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 12 — Testes de Usabilidade · IHC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070F;
+  --surface: #0E0E1A;
+  --card: #131322;
+  --card-hover: #1A1A2E;
+  --border: rgba(255,255,255,0.07);
+  --cyan: #00E5FF;
+  --pink: #FF0080;
+  --purple: #9B5DE5;
+  --yellow: #FFD60A;
+  --green: #00D97E;
+  --text: #E4E4F0;
+  --muted: #636380;
+  --font-d: 'Syne', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+  background-size:50px 50px;pointer-events:none;z-index:0
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,229,255,.08),transparent);
+  pointer-events:none;z-index:0
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(7,7,15,.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.5rem;
+  height:58px;padding:0 1.5rem
+}
+.nav-logo{
+  font-family:var(--font-d);font-weight:800;font-size:.8rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);
+  margin-right:auto;white-space:nowrap;flex-shrink:0
+}
+.nav-logo span{color:var(--muted);font-weight:400}
+.nav-tabs{display:flex;gap:.2rem;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{
+  background:none;border:none;color:var(--muted);
+  font-family:var(--font-m);font-size:.65rem;padding:.35rem .75rem;
+  border-radius:5px;cursor:pointer;transition:all .2s;
+  white-space:nowrap;text-transform:uppercase;letter-spacing:.06em
+}
+.ntab:hover{color:var(--text);background:var(--card)}
+.ntab.on{color:var(--bg);background:var(--cyan)}
+
+/* ── SECTIONS ── */
+.sec{display:none;min-height:100vh;padding:78px 1.5rem 5rem;position:relative;z-index:1}
+.sec.on{display:block}
+.inner{max-width:1080px;margin:0 auto}
+
+/* ── HERO ── */
+#s-home{display:none;align-items:center;justify-content:center;text-align:center}
+#s-home.on{display:flex}
+
+.hero-eyebrow{
+  font-family:var(--font-m);font-size:.7rem;color:var(--cyan);
+  letter-spacing:.22em;text-transform:uppercase;margin-bottom:1.5rem;
+  opacity:0;animation:up .6s .1s ease both
+}
+.hero-h{
+  font-family:var(--font-d);font-size:clamp(2.8rem,8vw,6.5rem);
+  font-weight:800;line-height:1;margin-bottom:1.5rem;
+  opacity:0;animation:up .6s .25s ease both
+}
+.hero-h em{color:var(--cyan);font-style:normal;display:block}
+.hero-h small{display:block;font-size:.45em;color:var(--muted);font-weight:400;margin-top:.6rem}
+.hero-p{
+  max-width:540px;margin:0 auto 2rem;color:var(--muted);
+  font-size:1.05rem;line-height:1.75;
+  opacity:0;animation:up .6s .4s ease both
+}
+.hero-chips{
+  display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;
+  margin-bottom:2.5rem;opacity:0;animation:up .6s .55s ease both
+}
+.chip{
+  padding:.35rem .9rem;border-radius:100px;
+  font-family:var(--font-m);font-size:.65rem;
+  border:1px solid;letter-spacing:.05em;text-transform:uppercase
+}
+.chip-c{border-color:var(--cyan);color:var(--cyan)}
+.chip-p{border-color:var(--pink);color:var(--pink)}
+.chip-v{border-color:var(--purple);color:var(--purple)}
+.chip-y{border-color:var(--yellow);color:var(--yellow)}
+.hero-btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.9rem 2rem;background:var(--cyan);color:var(--bg);
+  font-family:var(--font-d);font-weight:700;font-size:.95rem;
+  border:none;border-radius:8px;cursor:pointer;transition:all .2s;
+  opacity:0;animation:up .6s .7s ease both
+}
+.hero-btn:hover{background:#fff;transform:translateY(-3px);box-shadow:0 20px 50px rgba(0,229,255,.25)}
+
+/* ── SECTION HEADERS ── */
+.s-tag{font-family:var(--font-m);font-size:.65rem;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem}
+.s-title{font-family:var(--font-d);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.1;margin-bottom:.9rem}
+.s-desc{color:var(--muted);font-size:1rem;line-height:1.75;max-width:620px;margin-bottom:2.5rem}
+.s-desc strong{color:var(--text)}
+
+/* ── TOPIC GRID ── */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.9rem;margin-bottom:3rem}
+.tcard{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.5rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden
+}
+.tcard::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--ac,var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .3s
+}
+.tcard:hover::after{transform:scaleX(1)}
+.tcard:hover{background:var(--card-hover);transform:translateY(-5px);border-color:rgba(255,255,255,.12);box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.tcard-icon{font-size:2rem;margin-bottom:.9rem}
+.tcard-name{font-family:var(--font-d);font-weight:700;font-size:.95rem;margin-bottom:.4rem}
+.tcard-desc{color:var(--muted);font-size:.82rem;line-height:1.6}
+
+/* ── STAT STRIP ── */
+.stat-strip{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;margin-top:2.5rem
+}
+.stat-strip-text{flex:1;min-width:200px}
+.stat-strip-text h3{font-family:var(--font-d);font-size:1.2rem;font-weight:800;margin-bottom:.6rem}
+.stat-strip-text p{color:var(--muted);font-size:.875rem;line-height:1.7}
+.stats-row{display:flex;gap:2rem;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-family:var(--font-d);font-size:2.8rem;font-weight:800;line-height:1}
+.stat-label{font-family:var(--font-m);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem;max-width:80px}
+
+/* ── MATRIX ── */
+.matrix{display:grid;grid-template-columns:90px 1fr 1fr;grid-template-rows:50px 1fr 1fr;gap:8px;margin-bottom:2rem}
+.m-lbl{font-family:var(--font-m);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.4}
+.m-lbl.vert{writing-mode:vertical-rl;transform:rotate(180deg)}
+.m-cell{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1.25rem;transition:all .3s;cursor:default
+}
+.m-cell:hover{background:var(--card-hover);border-color:var(--ac);box-shadow:0 0 30px -15px var(--ac)}
+.m-cell h4{font-family:var(--font-d);font-size:.82rem;font-weight:700;color:var(--ac);margin-bottom:.75rem}
+.m-cell ul{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.m-cell ul li{
+  font-family:var(--font-m);font-size:.68rem;color:var(--muted);
+  padding:.3rem .6rem;background:rgba(255,255,255,.03);border-radius:4px;transition:color .2s
+}
+.m-cell:hover ul li{color:var(--text)}
+
+/* ── METHOD CARDS ── */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem;margin-top:2rem}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s}
+.mcard:hover{transform:translateY(-5px);border-color:var(--mc);box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.mcard-hd{padding:1.2rem;display:flex;align-items:center;gap:.75rem;background:var(--mc)}
+.mcard-hd-icon{font-size:1.4rem}
+.mcard-hd h3{font-family:var(--font-d);font-size:.9rem;font-weight:700;color:var(--bg)}
+.mcard-bd{padding:1.25rem}
+.mcard-bd p{color:var(--muted);font-size:.82rem;line-height:1.7;margin-bottom:.9rem}
+.mtag{
+  display:inline-block;padding:.18rem .55rem;background:rgba(255,255,255,.05);
+  border-radius:4px;font-family:var(--font-m);font-size:.6rem;color:var(--mc);margin:.1rem
+}
+
+/* ── CARD SORT ── */
+.cs-tip{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1.25rem 1.5rem;margin-bottom:1.75rem;
+  display:flex;align-items:center;gap:1rem
+}
+.cs-tip-icon{font-size:2.2rem;flex-shrink:0}
+.cs-tip h3{font-family:var(--font-d);font-weight:700;font-size:.95rem;margin-bottom:.25rem}
+.cs-tip p{color:var(--muted);font-size:.82rem;line-height:1.6}
+
+.cs-pool-wrap{margin-bottom:1.5rem}
+.cs-pool-lbl{font-family:var(--font-m);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.cs-pool{
+  display:flex;flex-wrap:wrap;gap:.6rem;
+  padding:1rem;background:rgba(255,255,255,.02);
+  border:1px dashed var(--border);border-radius:12px;min-height:58px
+}
+.ccard{
+  padding:.55rem 1.1rem;background:var(--card);border:1px solid var(--border);
+  border-radius:8px;font-family:var(--font-m);font-size:.72rem;
+  cursor:pointer;transition:all .2s;user-select:none;animation:fadeIn .3s ease
+}
+.ccard:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+.ccard.sel{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.1);box-shadow:0 0 15px rgba(0,229,255,.15)}
+.ccard.done{opacity:.35;pointer-events:none;text-decoration:line-through}
+.cs-hint{
+  font-family:var(--font-m);font-size:.68rem;color:var(--cyan);
+  margin-bottom:1.25rem;padding:.5rem 1rem;background:rgba(0,229,255,.06);
+  border-radius:6px;border:1px solid rgba(0,229,255,.15);display:none
+}
+.cs-hint.show{display:block}
+
+.cs-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:1.75rem}
+.cs-cat{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:1rem;min-height:170px;transition:all .2s;cursor:pointer;position:relative
+}
+.cs-cat:hover,.cs-cat.lit{border-color:var(--cc);background:rgba(255,255,255,.02)}
+.cs-cat-ttl{font-family:var(--font-d);font-size:.82rem;font-weight:700;color:var(--cc);margin-bottom:.75rem}
+.cs-cat-items{display:flex;flex-direction:column;gap:.35rem}
+.cs-cat-item{
+  padding:.38rem .7rem;background:rgba(255,255,255,.04);border-radius:6px;
+  font-family:var(--font-m);font-size:.67rem;color:var(--text);animation:fadeIn .3s ease
+}
+.cs-result{
+  display:none;background:var(--card);border:1px solid var(--cyan);
+  border-radius:14px;padding:2rem;text-align:center;animation:up .5s ease
+}
+.cs-result.show{display:block}
+.cs-result-emoji{font-size:3rem;margin-bottom:.75rem}
+.cs-result h3{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--cyan);margin-bottom:.75rem}
+.cs-result p{color:var(--muted);font-size:.9rem;line-height:1.7}
+.cs-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.5rem;text-align:left}
+.cs-sum-col{background:rgba(255,255,255,.03);padding:.9rem;border-radius:8px}
+.cs-sum-col-ttl{font-family:var(--font-d);font-weight:700;font-size:.78rem;margin-bottom:.6rem}
+.cs-sum-item{font-family:var(--font-m);font-size:.65rem;color:var(--muted);margin-bottom:.2rem}
+
+/* ── HEATMAP ── */
+.hm-controls{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.hm-btn{
+  padding:.55rem 1.1rem;border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-family:var(--font-m);font-size:.68rem;border-radius:6px;
+  cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.06em
+}
+.hm-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.hm-btn.on{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}
+
+.hm-legend{display:flex;align-items:center;gap:.6rem;font-family:var(--font-m);font-size:.65rem;color:var(--muted);margin-bottom:1.25rem}
+.hm-bar{flex:1;max-width:180px;height:7px;border-radius:4px;background:linear-gradient(to right,#0000cc,#0099ff,#00ff88,#ffff00,#ff4400,#ff0000)}
+
+.hm-wrap{
+  position:relative;border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;cursor:crosshair;background:var(--card);margin-bottom:1.75rem
+}
+.hm-wrap svg{display:block;width:100%}
+#hm-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+
+.hm-insight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.9rem;margin-top:1.5rem}
+.hm-insight{padding:1rem;border-radius:10px;border:1px solid}
+.hm-insight.c{background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.15)}
+.hm-insight.p{background:rgba(255,0,128,.05);border-color:rgba(255,0,128,.15)}
+.hm-insight.v{background:rgba(155,93,229,.05);border-color:rgba(155,93,229,.15)}
+.hm-insight-icon{font-size:1.4rem;margin-bottom:.5rem}
+.hm-insight-ttl{font-family:var(--font-d);font-weight:700;font-size:.82rem;margin-bottom:.35rem}
+.hm-insight-desc{color:var(--muted);font-size:.78rem;line-height:1.6}
+
+/* ── QUIZ ── */
+.q-prog{display:flex;gap:.4rem;margin-bottom:2rem}
+.q-dot{height:4px;flex:1;border-radius:2px;background:var(--card);transition:background .3s}
+.q-dot.done{background:var(--cyan)}
+.q-dot.now{background:var(--pink)}
+
+.q-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;animation:up .4s ease}
+.q-num{font-family:var(--font-m);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem}
+.q-txt{font-family:var(--font-d);font-size:1.15rem;font-weight:700;line-height:1.45;margin-bottom:1.5rem}
+.q-opts{display:flex;flex-direction:column;gap:.65rem}
+.q-opt{
+  padding:.8rem 1.2rem;background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:9px;cursor:pointer;font-size:.9rem;transition:all .2s;
+  text-align:left;color:var(--text);font-family:var(--font-b)
+}
+.q-opt:hover{border-color:var(--cyan);background:rgba(0,229,255,.05)}
+.q-opt.right{border-color:var(--green);background:rgba(0,217,126,.1);color:var(--green)}
+.q-opt.bad{border-color:var(--pink);background:rgba(255,0,128,.1);color:var(--pink)}
+.q-opt.off{pointer-events:none;opacity:.45}
+.q-opt.right.off,.q-opt.bad.off{opacity:1}
+
+.q-fb{display:none;padding:.9rem 1.1rem;border-radius:8px;margin-top:.9rem;font-size:.84rem;line-height:1.65}
+.q-fb.show{display:block}
+.q-fb.right{background:rgba(0,217,126,.1);color:var(--green);border:1px solid var(--green)}
+.q-fb.bad{background:rgba(255,0,128,.1);color:var(--pink);border:1px solid var(--pink)}
+
+.q-next{
+  padding:.8rem 1.8rem;background:var(--cyan);color:var(--bg);border:none;
+  border-radius:8px;font-family:var(--font-d);font-weight:700;font-size:.88rem;
+  cursor:pointer;transition:all .2s;display:none;margin-top:.9rem
+}
+.q-next.show{display:block}
+.q-next:hover{background:#fff}
+
+.q-score{
+  display:none;text-align:center;padding:3rem 2rem;
+  background:var(--card);border:1px solid var(--cyan);border-radius:16px;animation:up .5s ease
+}
+.q-score.show{display:block}
+.q-score-big{font-family:var(--font-d);font-size:5rem;font-weight:800;color:var(--cyan);line-height:1}
+.q-score-sub{font-family:var(--font-m);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.5rem;margin-top:.25rem}
+.q-score-msg{font-size:1.05rem;color:var(--text);margin-bottom:2rem;line-height:1.6}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.4rem;border-radius:8px;font-family:var(--font-d);font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;border:none}
+.btn-c{background:var(--cyan);color:var(--bg)}.btn-c:hover{background:#fff}
+.btn-o{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-o:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* ── ANIMATIONS ── */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--card-hover);border-radius:3px}
+
+@media(max-width:640px){
+  .cs-cats{grid-template-columns:1fr}
+  .matrix{grid-template-columns:55px 1fr 1fr}
+  .cs-summary{grid-template-columns:1fr}
+  .stats-row{gap:1rem}
+  .stat-num{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav>
+  <div class="nav-logo">IHC <span>/ Módulo 12</span></div>
+  <div class="nav-tabs">
+    <button class="ntab on"  onclick="go('s-home')">🏠 Início</button>
+    <button class="ntab"     onclick="go('s-visao')">📋 Visão Geral</button>
+    <button class="ntab"     onclick="go('s-metodos')">🔬 Métodos</button>
+    <button class="ntab"     onclick="go('s-cardsort')">🃏 Card Sorting</button>
+    <button class="ntab"     onclick="go('s-heatmap')">🔥 Heatmap</button>
+    <button class="ntab"     onclick="go('s-quiz')">🎯 Quiz</button>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="sec on" id="s-home">
+  <div class="inner" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 58px);text-align:center;padding:2rem 0">
+    <div>
+      <p class="hero-eyebrow">Interface Humano-Computador · Módulo 12</p>
+      <h1 class="hero-h">
+        Testes de
+        <em>Usabilidade</em>
+        <small>Como avaliar interfaces de forma científica</small>
+      </h1>
+      <p class="hero-p">Aprenda a medir, observar e melhorar interfaces com as principais técnicas usadas por times de produto ao redor do mundo.</p>
+      <div class="hero-chips">
+        <span class="chip chip-c">📊 Quantitativo</span>
+        <span class="chip chip-v">🗣️ Qualitativo</span>
+        <span class="chip chip-p">🔥 Heatmap</span>
+        <span class="chip chip-y">🃏 Card Sorting</span>
+      </div>
+      <button class="hero-btn" onclick="go('s-visao')">Começar a explorar →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ VISÃO GERAL ══════════════════ -->
+<section class="sec" id="s-visao">
+  <div class="inner">
+    <p class="s-tag">Módulo 12 · Visão Geral</p>
+    <h2 class="s-title">O que você vai aprender</h2>
+    <p class="s-desc">Testes de usabilidade são a ponte entre o que <strong>designers imaginam</strong> e o que <strong>usuários realmente vivenciam</strong>. Este módulo apresenta as ferramentas para cruzar essa ponte.</p>
+
+    <div class="tgrid">
+      <div class="tcard" style="--ac:var(--cyan)" onclick="go('s-metodos')">
+        <div class="tcard-icon">📐</div>
+        <div class="tcard-name">Métodos Quant. &amp; Qual.</div>
+        <div class="tcard-desc">Entenda quando usar números e quando usar narrativas na avaliação de interfaces.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--purple)" onclick="go('s-metodos')">
+        <div class="tcard-icon">🧠</div>
+        <div class="tcard-name">Atitudinal vs Comportamental</div>
+        <div class="tcard-desc">O que usuários <em>dizem</em> versus o que <em>fazem</em> — frequentemente contradições que revelam verdades.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--pink)" onclick="go('s-heatmap')">
+        <div class="tcard-icon">🔥</div>
+        <div class="tcard-name">Heatmap</div>
+        <div class="tcard-desc">Visualize onde a atenção dos usuários se concentra em qualquer interface através de mapas de calor.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--yellow)" onclick="go('s-metodos')">
+        <div class="tcard-icon">💬</div>
+        <div class="tcard-name">Entrevistas &amp; Focus Group</div>
+        <div class="tcard-desc">Técnicas para coletar insights qualitativos profundos, individuais ou em grupo.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--cyan)" onclick="go('s-cardsort')">
+        <div class="tcard-icon">🃏</div>
+        <div class="tcard-name">Card Sorting</div>
+        <div class="tcard-desc">Descubra como usuários organizam mentalmente as informações — base da arquitetura de informação.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--purple)" onclick="go('s-metodos')">
+        <div class="tcard-icon">💡</div>
+        <div class="tcard-name">Teste de Conceito</div>
+        <div class="tcard-desc">Valide hipóteses cedo, economize desenvolvimento e entregue o que o usuário realmente quer.</div>
+      </div>
+      <div class="tcard" style="--ac:var(--pink)" onclick="go('s-metodos')">
+        <div class="tcard-icon">📡</div>
+        <div class="tcard-name">Monitoramento</div>
+        <div class="tcard-desc">Analytics passivo e contínuo que revela padrões de uso no mundo real.</div>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-strip-text">
+        <h3>Por que testar usabilidade?</h3>
+        <p>Identificar problemas cedo reduz custo de correção exponencialmente. Uma interface melhor significa menos abandono, mais conversão e usuários mais satisfeitos.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--cyan)">85%</div>
+          <div class="stat-label">dos problemas encontrados com apenas 5 usuários</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--pink)">100×</div>
+          <div class="stat-label">mais barato corrigir antes do lançamento</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--yellow)">70%</div>
+          <div class="stat-label">dos projetos falham por ignorar o usuário</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ MÉTODOS ══════════════════ -->
+<section class="sec" id="s-metodos">
+  <div class="inner">
+    <p class="s-tag">Taxonomia</p>
+    <h2 class="s-title">Métodos de Pesquisa</h2>
+    <p class="s-desc">Os métodos se organizam em dois eixos: <strong>o que</strong> está sendo medido (atitude ou comportamento) e <strong>como</strong> (quantitativo ou qualitativo).</p>
+
+    <!-- 2x2 Matrix -->
+    <div class="matrix">
+      <div></div>
+      <div class="m-lbl" style="color:var(--cyan)">📊 Quantitativo<br><span style="font-size:.55rem;opacity:.6">MÉTRICAS E NÚMEROS</span></div>
+      <div class="m-lbl" style="color:var(--purple)">🔍 Qualitativo<br><span style="font-size:.55rem;opacity:.6">CONTEXTO E NARRATIVA</span></div>
+      <div class="m-lbl vert" style="color:var(--yellow)">💬 Atitudinal</div>
+      <div class="m-cell" style="--ac:var(--cyan)">
+        <h4>O que dizem + Números</h4>
+        <ul>
+          <li>📋 Surveys &amp; Questionários</li>
+          <li>📊 Testes de Conceito</li>
+          <li>⭐ Escalas SUS / NPS</li>
+        </ul>
+      </div>
+      <div class="m-cell" style="--ac:var(--purple)">
+        <h4>O que dizem + Profundidade</h4>
+        <ul>
+          <li>💬 Entrevistas 1:1</li>
+          <li>👥 Focus Group</li>
+          <li>📓 Diários de uso</li>
+        </ul>
+      </div>
+      <div class="m-lbl vert" style="color:var(--pink)">🖱️ Comportamental</div>
+      <div class="m-cell" style="--ac:var(--yellow)">
+        <h4>O que fazem + Números</h4>
+        <ul>
+          <li>🔥 Heatmaps &amp; Clickmaps</li>
+          <li>📡 Analytics / Monitoramento</li>
+          <li>⏱️ Taxa de conclusão</li>
+        </ul>
+      </div>
+      <div class="m-cell" style="--ac:var(--pink)">
+        <h4>O que fazem + Contexto</h4>
+        <ul>
+          <li>🃏 Card Sorting</li>
+          <li>🗣️ Think-aloud Protocol</li>
+          <li>👁️ Eye-tracking</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <h3 style="font-family:var(--font-d);font-weight:800;font-size:1.4rem;margin-bottom:1.5rem">Técnicas em Detalhe</h3>
+
+    <div class="mgrid">
+      <div class="mcard" style="--mc:var(--cyan)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">💬</span><h3>Entrevistas</h3></div>
+        <div class="mcard-bd">
+          <p>Conversas estruturadas ou semi-estruturadas que exploram percepções, motivações e frustrações com profundidade real.</p>
+          <span class="mtag">Qualitativo</span><span class="mtag">Atitudinal</span><span class="mtag">1:1</span>
+        </div>
+      </div>
+      <div class="mcard" style="--mc:var(--pink)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">👥</span><h3>Focus Group</h3></div>
+        <div class="mcard-bd">
+          <p>Discussão guiada com 6–10 pessoas que revela dinâmicas coletivas, consensos e divergências impossíveis em entrevistas solo.</p>
+          <span class="mtag">Qualitativo</span><span class="mtag">Atitudinal</span><span class="mtag">Grupo</span>
+        </div>
+      </div>
+      <div class="mcard" style="--mc:var(--yellow)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">💡</span><h3>Teste de Conceito</h3></div>
+        <div class="mcard-bd">
+          <p>Validação de ideias com usuários antes do desenvolvimento completo — elimina retrabalho ao confirmar hipóteses cedo.</p>
+          <span class="mtag">Quant/Qual</span><span class="mtag">Atitudinal</span><span class="mtag">Early stage</span>
+        </div>
+      </div>
+      <div class="mcard" style="--mc:var(--purple)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">📡</span><h3>Monitoramento</h3></div>
+        <div class="mcard-bd">
+          <p>Coleta passiva e contínua de dados reais: fluxos de navegação, taxa de abandono, tempo na página e performance.</p>
+          <span class="mtag">Quantitativo</span><span class="mtag">Comportamental</span><span class="mtag">Contínuo</span>
+        </div>
+      </div>
+      <div class="mcard" style="--mc:var(--green)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">🃏</span><h3>Card Sorting</h3></div>
+        <div class="mcard-bd">
+          <p>Usuários organizam conteúdos em categorias — revela o modelo mental que deve guiar a arquitetura de informação.</p>
+          <span class="mtag">Qualitativo</span><span class="mtag">Comportamental</span><span class="mtag">IA</span>
+        </div>
+      </div>
+      <div class="mcard" style="--mc:var(--cyan)">
+        <div class="mcard-hd"><span class="mcard-hd-icon">🔥</span><h3>Heatmap</h3></div>
+        <div class="mcard-bd">
+          <p>Visualização colorida que mostra onde usuários clicam, movem o mouse ou fixam o olhar em uma interface.</p>
+          <span class="mtag">Quantitativo</span><span class="mtag">Comportamental</span><span class="mtag">Visual</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CARD SORTING ══════════════════ -->
+<section class="sec" id="s-cardsort">
+  <div class="inner">
+    <p class="s-tag">Técnica Interativa</p>
+    <h2 class="s-title">Card Sorting</h2>
+    <p class="s-desc">No Card Sorting, usuários agrupam itens de conteúdo em categorias. Isso revela o <strong>modelo mental</strong> deles — fundamental para criar navegações intuitivas.</p>
+
+    <div class="cs-tip">
+      <div class="cs-tip-icon">🧪</div>
+      <div>
+        <h3>Experimente você mesmo!</h3>
+        <p>Clique em um card para selecioná-lo (ele ficará destacado), depois clique na categoria onde acha que ele pertence. Complete todos os 8 cards!</p>
+      </div>
+    </div>
+
+    <div class="cs-pool-wrap">
+      <div class="cs-pool-lbl">Cards disponíveis — clique para selecionar</div>
+      <div class="cs-pool" id="cs-pool"></div>
+    </div>
+
+    <div class="cs-hint" id="cs-hint">✨ Ótimo! Agora clique na categoria onde este item pertence 👇</div>
+
+    <div class="cs-cats">
+      <div class="cs-cat" style="--cc:var(--cyan)"  data-ci="0" onclick="dropCard(0)">
+        <div class="cs-cat-ttl">🔍 Descoberta</div>
+        <div class="cs-cat-items" id="cc-0"></div>
+      </div>
+      <div class="cs-cat" style="--cc:var(--purple)" data-ci="1" onclick="dropCard(1)">
+        <div class="cs-cat-ttl">⚙️ Funcionalidade</div>
+        <div class="cs-cat-items" id="cc-1"></div>
+      </div>
+      <div class="cs-cat" style="--cc:var(--pink)" data-ci="2" onclick="dropCard(2)">
+        <div class="cs-cat-ttl">👤 Conta &amp; Perfil</div>
+        <div class="cs-cat-items" id="cc-2"></div>
+      </div>
+    </div>
+
+    <div class="cs-result" id="cs-result">
+      <div class="cs-result-emoji">🎉</div>
+      <h3>Card Sorting concluído!</h3>
+      <p>Na vida real, pesquisadores aplicam isso com dezenas de usuários e usam análise de cluster para identificar padrões. Veja como você organizou:</p>
+      <div class="cs-summary" id="cs-summ"></div>
+      <div style="margin-top:1.5rem">
+        <button class="btn btn-c" onclick="resetCS()">↺ Recomeçar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ HEATMAP ══════════════════ -->
+<section class="sec" id="s-heatmap">
+  <div class="inner">
+    <p class="s-tag">Visualização de Dados</p>
+    <h2 class="s-title">Heatmap Interativo</h2>
+    <p class="s-desc">Mova o mouse (ou toque) sobre o wireframe para gerar um heatmap em tempo real. Na prática, ferramentas como <strong>Hotjar</strong> e <strong>Microsoft Clarity</strong> fazem isso automaticamente.</p>
+
+    <div class="hm-controls">
+      <button class="hm-btn on" id="hb-live" onclick="setHmMode('live')">🖱️ Ao vivo</button>
+      <button class="hm-btn"    id="hb-ex"   onclick="setHmMode('ex')">📊 Exemplo típico</button>
+      <button class="hm-btn"               onclick="clearHm()">🗑️ Limpar</button>
+    </div>
+
+    <div class="hm-legend">
+      <span>Frio</span>
+      <div class="hm-bar"></div>
+      <span>Quente</span>
+      <span style="margin-left:.8rem;opacity:.6">· Vermelho = maior atenção · Azul = menor atenção</span>
+    </div>
+
+    <div class="hm-wrap" id="hm-wrap">
+      <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg">
+        <!-- bg -->
+        <rect width="800" height="480" fill="#131322"/>
+        <!-- header bar -->
+        <rect x="0" y="0" width="800" height="62" fill="#1A1A2E"/>
+        <!-- logo -->
+        <rect x="22" y="18" width="72" height="26" rx="5" fill="#252545"/>
+        <!-- nav items -->
+        <rect x="240" y="23" width="65" height="16" rx="3" fill="#252545"/>
+        <rect x="320" y="23" width="65" height="16" rx="3" fill="#252545"/>
+        <rect x="400" y="23" width="65" height="16" rx="3" fill="#252545"/>
+        <rect x="480" y="23" width="65" height="16" rx="3" fill="#252545"/>
+        <!-- search bar -->
+        <rect x="590" y="17" width="130" height="28" rx="14" fill="#1E1E38"/>
+        <rect x="720" y="17" width="62" height="28" rx="14" fill="#00E5FF" opacity=".22"/>
+        <text x="751" y="35" fill="#00E5FF" font-size="11" text-anchor="middle" font-family="monospace" opacity=".8">Entrar</text>
+        <!-- hero area -->
+        <rect x="0" y="62" width="800" height="170" fill="#1A1A2E"/>
+        <rect x="180" y="88" width="440" height="26" rx="5" fill="#252545"/>
+        <rect x="240" y="126" width="320" height="15" rx="3" fill="#1E1E38"/>
+        <rect x="290" y="153" width="90" height="32" rx="16" fill="#00E5FF" opacity=".28"/>
+        <text x="335" y="174" fill="#00E5FF" font-size="11" text-anchor="middle" font-family="monospace" opacity=".9">Ver mais</text>
+        <rect x="392" y="153" width="90" height="32" rx="16" fill="#252545"/>
+        <!-- product cards -->
+        <rect x="22"  y="254" width="230" height="155" rx="9" fill="#1A1A2E"/>
+        <rect x="22"  y="254" width="230" height="85"  rx="9" fill="#252545"/>
+        <rect x="32"  y="350" width="110" height="11"  rx="2" fill="#252545"/>
+        <rect x="32"  y="370" width="60"  height="11"  rx="2" fill="#1E1E38"/>
+        <rect x="172" y="367" width="70"  height="28"  rx="6" fill="#00E5FF" opacity=".18"/>
+
+        <rect x="285" y="254" width="230" height="155" rx="9" fill="#1A1A2E"/>
+        <rect x="285" y="254" width="230" height="85"  rx="9" fill="#252545"/>
+        <rect x="295" y="350" width="110" height="11"  rx="2" fill="#252545"/>
+        <rect x="295" y="370" width="60"  height="11"  rx="2" fill="#1E1E38"/>
+        <rect x="435" y="367" width="70"  height="28"  rx="6" fill="#00E5FF" opacity=".18"/>
+
+        <rect x="548" y="254" width="230" height="155" rx="9" fill="#1A1A2E"/>
+        <rect x="548" y="254" width="230" height="85"  rx="9" fill="#252545"/>
+        <rect x="558" y="350" width="110" height="11"  rx="2" fill="#252545"/>
+        <rect x="558" y="370" width="60"  height="11"  rx="2" fill="#1E1E38"/>
+        <rect x="698" y="367" width="70"  height="28"  rx="6" fill="#00E5FF" opacity=".18"/>
+
+        <!-- footer -->
+        <rect x="0" y="438" width="800" height="42" fill="#0E0E1A"/>
+        <rect x="22" y="449" width="70" height="8" rx="2" fill="#1A1A2E"/>
+        <rect x="110" y="449" width="55" height="8" rx="2" fill="#1A1A2E"/>
+        <rect x="180" y="449" width="55" height="8" rx="2" fill="#1A1A2E"/>
+      </svg>
+      <canvas id="hm-canvas"></canvas>
+    </div>
+
+    <div class="hm-insight-grid">
+      <div class="hm-insight c">
+        <div class="hm-insight-icon">🖱️</div>
+        <div class="hm-insight-ttl">Move Heatmap</div>
+        <div class="hm-insight-desc">Rastreia o trajeto do cursor — proxy para atenção visual, especialmente em longas leituras.</div>
+      </div>
+      <div class="hm-insight p">
+        <div class="hm-insight-icon">👆</div>
+        <div class="hm-insight-ttl">Click Heatmap</div>
+        <div class="hm-insight-desc">Revela onde os usuários clicam — expõe confusão (cliques em não-links) e intenção real.</div>
+      </div>
+      <div class="hm-insight v">
+        <div class="hm-insight-icon">📜</div>
+        <div class="hm-insight-ttl">Scroll Heatmap</div>
+        <div class="hm-insight-desc">Mostra até onde a página é lida — essencial para saber se CTAs e conteúdo chave são vistos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ QUIZ ══════════════════ -->
+<section class="sec" id="s-quiz">
+  <div class="inner" style="max-width:700px">
+    <p class="s-tag">Teste seus conhecimentos</p>
+    <h2 class="s-title">Quiz do Módulo 12</h2>
+    <p class="s-desc">5 perguntas para fixar os conceitos. Você consegue <strong>zerar</strong>?</p>
+
+    <div class="q-prog" id="q-prog"></div>
+    <div id="q-wrap"></div>
+    <div class="q-score" id="q-score"></div>
+  </div>
+</section>
+
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script>
+/* ─────────── NAVIGATION ─────────── */
+const ORDER = ['s-home','s-visao','s-metodos','s-cardsort','s-heatmap','s-quiz'];
+
+function go(id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  const i = ORDER.indexOf(id);
+  document.querySelectorAll('.ntab')[i]?.classList.add('on');
+  window.scrollTo(0,0);
+  if (id === 's-heatmap')  initHeatmap();
+  if (id === 's-cardsort') initCS();
+  if (id === 's-quiz')     initQuiz();
+}
+
+/* ─────────── CARD SORTING ─────────── */
+const CS_DATA = [
+  { id:0, label:'🔍 Busca avançada',    cat:0 },
+  { id:1, label:'🛒 Adicionar ao carrinho', cat:1 },
+  { id:2, label:'📦 Meus pedidos',      cat:2 },
+  { id:3, label:'⭐ Recomendados p/ você', cat:0 },
+  { id:4, label:'⚙️ Configurações',     cat:2 },
+  { id:5, label:'🏷️ Promoções',         cat:0 },
+  { id:6, label:'💳 Checkout',          cat:1 },
+  { id:7, label:'👤 Meu perfil',        cat:2 },
+];
+const CAT_NAMES = ['Descoberta','Funcionalidade','Conta & Perfil'];
+
+let csSelected = null;
+let csPlaced   = {};
+let csInited   = false;
+
+function initCS() {
+  if (csInited) return;
+  csInited = true;
+  renderPool();
+}
+
+function renderPool() {
+  const pool = document.getElementById('cs-pool');
+  pool.innerHTML = '';
+  CS_DATA.forEach(item => {
+    if (csPlaced[item.id] !== undefined) return;
+    const el = document.createElement('div');
+    el.className = 'ccard';
+    el.textContent = item.label;
+    el.dataset.id = item.id;
+    el.onclick = () => pickCard(item.id, el);
+    pool.appendChild(el);
+  });
+}
+
+function pickCard(id, el) {
+  document.querySelectorAll('.ccard').forEach(c => c.classList.remove('sel'));
+  if (csSelected === id) {
+    csSelected = null;
+    document.getElementById('cs-hint').classList.remove('show');
+    document.querySelectorAll('.cs-cat').forEach(c => c.classList.remove('lit'));
+    return;
+  }
+  csSelected = id;
+  el.classList.add('sel');
+  document.getElementById('cs-hint').classList.add('show');
+  document.querySelectorAll('.cs-cat').forEach(c => c.classList.add('lit'));
+}
+
+function dropCard(catIdx) {
+  if (csSelected === null) return;
+  csPlaced[csSelected] = catIdx;
+  const item = CS_DATA.find(i => i.id === csSelected);
+
+  const row = document.createElement('div');
+  row.className = 'cs-cat-item';
+  row.textContent = item.label;
+  document.getElementById('cc-' + catIdx).appendChild(row);
+
+  const poolEl = document.querySelector(`.ccard[data-id="${csSelected}"]`);
+  if (poolEl) poolEl.classList.add('done');
+
+  csSelected = null;
+  document.getElementById('cs-hint').classList.remove('show');
+  document.querySelectorAll('.cs-cat').forEach(c => c.classList.remove('lit'));
+
+  if (Object.keys(csPlaced).length === CS_DATA.length) setTimeout(showCSResult, 400);
+}
+
+function showCSResult() {
+  document.getElementById('cs-result').classList.add('show');
+  let html = '';
+  for (let c = 0; c < 3; c++) {
+    const items = CS_DATA.filter(i => csPlaced[i.id] === c);
+    html += `<div class="cs-sum-col">
+      <div class="cs-sum-col-ttl" style="color:${['var(--cyan)','var(--purple)','var(--pink)'][c]}">${CAT_NAMES[c]}</div>
+      ${items.map(i => `<div class="cs-sum-item">${i.label}</div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('cs-summ').innerHTML = html;
+}
+
+function resetCS() {
+  csPlaced = {}; csSelected = null; csInited = false;
+  for (let c=0;c<3;c++) document.getElementById('cc-'+c).innerHTML='';
+  document.getElementById('cs-result').classList.remove('show');
+  document.getElementById('cs-hint').classList.remove('show');
+  initCS();
+}
+
+/* ─────────── HEATMAP ─────────── */
+let hmCanvas, hmCtx, hmMode = 'live', hmInited = false;
+
+function initHeatmap() {
+  if (hmInited) return;
+  hmInited = true;
+  const wrap = document.getElementById('hm-wrap');
+  hmCanvas   = document.getElementById('hm-canvas');
+  
+  function resize() {
+    hmCanvas.width  = wrap.offsetWidth;
+    hmCanvas.height = wrap.offsetHeight;
+  }
+  resize();
+  new ResizeObserver(resize).observe(wrap);
+  hmCtx = hmCanvas.getContext('2d');
+
+  wrap.addEventListener('mousemove', e => {
+    if (hmMode !== 'live') return;
+    const r = wrap.getBoundingClientRect();
+    drawBlob((e.clientX - r.left), (e.clientY - r.top), 28, .06);
+  });
+  wrap.addEventListener('click', e => {
+    if (hmMode !== 'live') return;
+    const r = wrap.getBoundingClientRect();
+    drawBlob((e.clientX - r.left), (e.clientY - r.top), 44, .35);
+  });
+  // Touch support
+  wrap.addEventListener('touchmove', e => {
+    if (hmMode !== 'live') return;
+    e.preventDefault();
+    const r = wrap.getBoundingClientRect();
+    const t = e.touches[0];
+    drawBlob((t.clientX - r.left), (t.clientY - r.top), 28, .07);
+  }, {passive:false});
+}
+
+function drawBlob(x, y, r, alpha) {
+  const g = hmCtx.createRadialGradient(x,y,0, x,y,r);
+  g.addColorStop(0,   `rgba(255,30,0,${alpha})`);
+  g.addColorStop(.35, `rgba(255,140,0,${alpha*.6})`);
+  g.addColorStop(.65, `rgba(0,200,255,${alpha*.25})`);
+  g.addColorStop(1,   'rgba(0,0,0,0)');
+  hmCtx.fillStyle = g;
+  hmCtx.fillRect(x-r, y-r, r*2, r*2);
+}
+
+function setHmMode(m) {
+  hmMode = m;
+  document.getElementById('hb-live').classList.toggle('on', m==='live');
+  document.getElementById('hb-ex').classList.toggle('on',   m==='ex');
+  if (m==='ex') { clearHm(); genExampleHm(); }
+}
+
+function clearHm() { if(hmCtx) hmCtx.clearRect(0,0,hmCanvas.width,hmCanvas.height); }
+
+function genExampleHm() {
+  const w = hmCanvas.width, h = hmCanvas.height;
+  // Hot spots matching the SVG wireframe
+  const spots = [
+    {x:.74,y:.065,r:.07,a:.9},  // Login btn — highest
+    {x:.42,y:.065,r:.04,a:.4},  // Nav item
+    {x:.53,y:.065,r:.04,a:.35},
+    {x:.5, y:.23, r:.13,a:.55}, // Hero title
+    {x:.36,y:.41, r:.08,a:.95}, // CTA button — very hot
+    {x:.49,y:.41, r:.06,a:.3},  // Secondary CTA
+    {x:.18,y:.71, r:.11,a:.5},  // Product 1
+    {x:.5, y:.71, r:.11,a:.65}, // Product 2 (most popular)
+    {x:.82,y:.71, r:.09,a:.4},  // Product 3
+    {x:.1, y:.065,r:.06,a:.55}, // Logo
+  ];
+  spots.forEach(s => {
+    const cx = s.x*w, cy = s.y*h, rad = s.r*Math.min(w,h);
+    for(let i=0;i<25;i++) {
+      const jx = cx+(Math.random()-.5)*rad*.8;
+      const jy = cy+(Math.random()-.5)*rad*.8;
+      drawBlob(jx, jy, rad*.7, s.a*.13);
+    }
+    drawBlob(cx, cy, rad, s.a*.22);
+  });
+}
+
+/* ─────────── QUIZ ─────────── */
+const Qs = [
+  {
+    q: 'Qual técnica é ideal para entender como os usuários organizam mentalmente as informações de um site?',
+    opts: ['A/B Testing','Card Sorting','Heatmap de cliques','Focus Group'],
+    ok: 1,
+    exp: 'O Card Sorting revela o modelo mental dos usuários ao pedir que organizem conteúdos em categorias — é a base de qualquer boa arquitetura de informação.'
+  },
+  {
+    q: 'Um pesquisador quer medir se os usuários conseguem completar tarefas com sucesso. Qual abordagem é mais adequada?',
+    opts: ['Entrevista em profundidade','Survey de satisfação (NPS)','Teste comportamental com métricas de conclusão','Focus Group criativo'],
+    ok: 2,
+    exp: 'O teste comportamental quantitativo observa o que os usuários realmente fazem, medindo taxas de sucesso, erros e tempo — dados objetivos e confiáveis.'
+  },
+  {
+    q: 'Pesquisa atitudinal difere da comportamental porque:',
+    opts: ['É sempre mais cara e demorada','Captura o que os usuários dizem, não o que fazem','Usa apenas dados numéricos e estatísticos','Só pode ser realizada presencialmente'],
+    ok: 1,
+    exp: 'Pesquisa atitudinal captura percepções e opiniões declaradas. Comportamental observa ações reais. Elas frequentemente divergem — e essa divergência é extremamente reveladora!'
+  },
+  {
+    q: 'Qual tipo de Heatmap mostra até onde os usuários rolam a página?',
+    opts: ['Click Heatmap','Move Heatmap','Scroll Heatmap','Attention Heatmap'],
+    ok: 2,
+    exp: 'O Scroll Heatmap revela a profundidade de leitura — permite saber se CTAs abaixo do fold estão sendo vistos e se o conteúdo final da página tem relevância.'
+  },
+  {
+    q: 'O Focus Group se diferencia da Entrevista individual principalmente porque:',
+    opts: ['É sempre mais objetivo e produz dados quantitativos','Envolve múltiplos participantes e explora dinâmicas de grupo','Só é usado para testar protótipos de alta fidelidade','Não permite perguntas abertas ou exploratórias'],
+    ok: 1,
+    exp: 'O Focus Group reúne 6–10 pessoas simultaneamente, permitindo observar consensos, conflitos de opinião e dinâmicas sociais que jamais emergiriam em entrevistas 1:1.'
+  }
+];
+
+let qCurrent = 0, qScore = 0, qAnswered = false, qInited = false;
+
+function initQuiz() {
+  if (qInited) return;
+  qInited = true;
+  renderQProg();
+  renderQ();
+}
+
+function renderQProg() {
+  document.getElementById('q-prog').innerHTML =
+    Qs.map((_,i) => `<div class="q-dot ${i<qCurrent?'done':i===qCurrent?'now':''}" id="qd${i}"></div>`).join('');
+}
+
+function updProg() {
+  Qs.forEach((_,i) => {
+    const d = document.getElementById('qd'+i);
+    if(d) d.className = 'q-dot '+(i<qCurrent?'done':i===qCurrent?'now':'');
+  });
+}
+
+function renderQ() {
+  if (qCurrent >= Qs.length) { showScore(); return; }
+  qAnswered = false;
+  const q = Qs[qCurrent];
+  document.getElementById('q-wrap').innerHTML = `
+    <div class="q-box">
+      <div class="q-num">Pergunta ${qCurrent+1} de ${Qs.length}</div>
+      <div class="q-txt">${q.q}</div>
+      <div class="q-opts">
+        ${q.opts.map((o,i)=>`<button class="q-opt" onclick="answerQ(${i})">${o}</button>`).join('')}
+      </div>
+      <div class="q-fb" id="qfb"></div>
+      <button class="q-next" id="qnext" onclick="nextQ()">
+        ${qCurrent < Qs.length-1 ? 'Próxima pergunta →' : 'Ver resultado →'}
+      </button>
+    </div>`;
+}
+
+function answerQ(idx) {
+  if (qAnswered) return;
+  qAnswered = true;
+  const q = Qs[qCurrent];
+  const ok = idx === q.ok;
+  if (ok) qScore++;
+
+  document.querySelectorAll('.q-opt').forEach((o,i) => {
+    o.classList.add('off');
+    if (i === q.ok) o.classList.add('right');
+    else if (i === idx && !ok) o.classList.add('bad');
+  });
+
+  const fb = document.getElementById('qfb');
+  fb.className = 'q-fb show ' + (ok ? 'right' : 'bad');
+  fb.innerHTML = (ok ? '✅ Correto! ' : '❌ Errado. ') + q.exp;
+  document.getElementById('qnext').classList.add('show');
+}
+
+function nextQ() { qCurrent++; updProg(); renderQ(); }
+
+function showScore() {
+  document.getElementById('q-wrap').innerHTML = '';
+  const pct = Math.round(qScore/Qs.length*100);
+  const msg = qScore===5 ? '🏆 Perfeito! Você domina o módulo!' :
+              qScore>=3  ? '👏 Muito bem! Revise os pontos errados.' :
+                           '📚 Continue estudando — tente novamente!';
+  const el = document.getElementById('q-score');
+  el.innerHTML = `
+    <div class="q-score-big">${qScore}/${Qs.length}</div>
+    <div class="q-score-sub">${pct}% de aproveitamento</div>
+    <div class="q-score-msg">${msg}</div>
+    <button class="btn btn-c" onclick="restartQ()">↺ Tentar novamente</button>
+    <button class="btn btn-o" style="margin-left:.75rem" onclick="go('s-visao')">📖 Revisar módulo</button>`;
+  el.classList.add('show');
+}
+
+function restartQ() {
+  qCurrent=0; qScore=0; qAnswered=false; qInited=false;
+  document.getElementById('q-score').classList.remove('show');
+  initQuiz();
+}
+</script>
+</body>
+</html>
