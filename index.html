@@ -325,11 +325,32 @@ nav{
 ::-webkit-scrollbar-thumb{background:var(--card-hover);border-radius:3px}
 
 @media(max-width:640px){
-  .cs-cats{grid-template-columns:1fr}
-  .matrix{grid-template-columns:55px 1fr 1fr}
-  .cs-summary{grid-template-columns:1fr}
-  .stats-row{gap:1rem}
+  nav{padding:0 .95rem}
+  .nav-logo{font-size:.7rem}
+  .nav-tabs{gap:.15rem;-webkit-overflow-scrolling:touch}
+  .ntab{font-size:.6rem;padding:.3rem .6rem}
+  .sec{padding:78px 1rem 4rem}
+  .hero-h{font-size:clamp(2.2rem,9vw,3.6rem)}
+  .hero-p{font-size:.95rem}
+  .hero-btn{width:100%;justify-content:center}
+  .stat-strip{padding:1.5rem;flex-direction:column;align-items:flex-start}
+  .stats-row{flex-direction:column;align-items:flex-start;gap:1rem}
+  .stat-item{text-align:left}
+  .stat-label{max-width:none}
   .stat-num{font-size:2rem}
+  .matrix{grid-template-columns:55px 1fr 1fr}
+  .m-cell{padding:1rem}
+  .mgrid{grid-template-columns:1fr}
+  .cs-tip{flex-direction:column;align-items:flex-start}
+  .cs-cats{grid-template-columns:1fr}
+  .cs-summary{grid-template-columns:1fr}
+  .hm-legend{flex-wrap:wrap;row-gap:.35rem}
+  .hm-bar{max-width:120px}
+  .q-box{padding:1.5rem}
+  .q-txt{font-size:1rem}
+  .q-opt{font-size:.85rem;padding:.7rem 1rem}
+  .q-score{padding:2rem 1.5rem}
+  .q-score-big{font-size:3.5rem}
 }
 </style>
 </head>
