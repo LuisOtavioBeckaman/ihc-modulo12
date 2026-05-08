@@ -18,6 +18,8 @@
   --purple: #9B5DE5;
   --yellow: #FFD60A;
   --green: #00D97E;
+  --matrix-label-width: 90px;
+  --hm-bar-max-width: 180px;
   --text: #E4E4F0;
   --muted: #636380;
   --font-d: 'Syne', sans-serif;
@@ -148,7 +150,7 @@ nav{
 .stat-label{font-family:var(--font-m);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem;max-width:80px}
 
 /* ── MATRIX ── */
-.matrix{display:grid;grid-template-columns:90px 1fr 1fr;grid-template-rows:50px 1fr 1fr;gap:8px;margin-bottom:2rem}
+.matrix{display:grid;grid-template-columns:var(--matrix-label-width) 1fr 1fr;grid-template-rows:50px 1fr 1fr;gap:8px;margin-bottom:2rem}
 .m-lbl{font-family:var(--font-m);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.4}
 .m-lbl.vert{writing-mode:vertical-rl;transform:rotate(180deg)}
 .m-cell{
@@ -246,7 +248,7 @@ nav{
 .hm-btn.on{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}
 
 .hm-legend{display:flex;align-items:center;gap:.6rem;font-family:var(--font-m);font-size:.65rem;color:var(--muted);margin-bottom:1.25rem}
-.hm-bar{flex:1;max-width:180px;height:7px;border-radius:4px;background:linear-gradient(to right,#0000cc,#0099ff,#00ff88,#ffff00,#ff4400,#ff0000)}
+.hm-bar{flex:1;max-width:var(--hm-bar-max-width);height:7px;border-radius:4px;background:linear-gradient(to right,#0000cc,#0099ff,#00ff88,#ffff00,#ff4400,#ff0000)}
 
 .hm-wrap{
   position:relative;border:1px solid var(--border);border-radius:14px;
@@ -325,9 +327,10 @@ nav{
 ::-webkit-scrollbar-thumb{background:var(--card-hover);border-radius:3px}
 
 @media(max-width:640px){
+  :root{--matrix-label-width:55px;--hm-bar-max-width:120px}
   nav{padding:0 .95rem}
   .nav-logo{font-size:.7rem}
-  .nav-tabs{gap:.15rem;-webkit-overflow-scrolling:touch}
+  .nav-tabs{gap:.15rem}
   .ntab{font-size:.6rem;padding:.3rem .6rem}
   .sec{padding:78px 1rem 4rem}
   .hero-h{font-size:clamp(2.2rem,9vw,3.6rem)}
@@ -338,14 +341,12 @@ nav{
   .stat-item{text-align:left}
   .stat-label{max-width:none}
   .stat-num{font-size:2rem}
-  .matrix{grid-template-columns:55px 1fr 1fr}
   .m-cell{padding:1rem}
   .mgrid{grid-template-columns:1fr}
   .cs-tip{flex-direction:column;align-items:flex-start}
   .cs-cats{grid-template-columns:1fr}
   .cs-summary{grid-template-columns:1fr}
   .hm-legend{flex-wrap:wrap;row-gap:.35rem}
-  .hm-bar{max-width:120px}
   .q-box{padding:1.5rem}
   .q-txt{font-size:1rem}
   .q-opt{font-size:.85rem;padding:.7rem 1rem}
